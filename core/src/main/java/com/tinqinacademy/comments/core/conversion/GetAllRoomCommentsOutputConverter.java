@@ -12,8 +12,7 @@ public class GetAllRoomCommentsOutputConverter implements Converter<Comment, Get
 
         return GetRoomCommentOutputInfo.builder()
             .id(String.valueOf(source.getId()))
-            .firstName(source.getFirstName())
-            .lastName(source.getLastName())
+            .userId(source.getUserId())
             .content(source.getContent())
             .publishDate(source.getPublishDate())
             .lastEditedBy(source.getLastEditedBy())

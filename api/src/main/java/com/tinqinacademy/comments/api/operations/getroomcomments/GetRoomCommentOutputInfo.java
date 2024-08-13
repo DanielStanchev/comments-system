@@ -18,8 +18,7 @@ import java.time.LocalDate;
 public class GetRoomCommentOutputInfo {
 
     private String id;
-    private String firstName;
-    private String lastName;
+    private String userId;
     private String content;
     private LocalDate publishDate;
     private LocalDate lastEditedDate;

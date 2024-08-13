@@ -25,12 +25,11 @@ import java.time.LocalDate;
 @Table(name = "comments")
 public class Comment extends BaseEntity {
 
-    // have to be User firstName
-    @Column(name = "first_name", nullable = false)
-    private String firstName;
-    //have to be User lastName
-    @Column(name = "last_name", nullable = false)
-    private String lastName;
+    @Column(name = "user_id", nullable = false)
+    private String userId;
+
+    @Column(name = "room_id",nullable = false)
+    private String roomId;
 
     @Column(name = "content", columnDefinition = "TEXT", nullable = false)
     private String content;
@@ -43,11 +42,8 @@ public class Comment extends BaseEntity {
     @UpdateTimestamp
     private LocalDate lastEditedDate;
 
-    // have to be User
+    // have to be the User id
     @Column(name = "last_edited_by")
     private String lastEditedBy;
 
-    //have to be relation with Room
-    @Column(name = "comment_room_id")
-    private String commentRoomId;
 }

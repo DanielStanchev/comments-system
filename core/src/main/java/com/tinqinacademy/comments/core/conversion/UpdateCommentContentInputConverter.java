@@ -11,6 +11,7 @@ public class UpdateCommentContentInputConverter implements Converter<UpdateComme
     @Override
     public Comment.CommentBuilder convert(UpdateCommentInput input) {
         return Comment.builder()
+            .userId(input.getUserId())
             .content(input.getContent());
     }
 }

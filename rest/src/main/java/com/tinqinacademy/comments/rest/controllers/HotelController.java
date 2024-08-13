@@ -48,7 +48,7 @@ private final UpdateComment updateComment;
     public ResponseEntity<?> getComments(@PathVariable("roomId") String roomId){
 
         GetRoomCommentsInput input = GetRoomCommentsInput.builder()
-            .id(roomId)
+            .roomId(roomId)
             .build();
 
         Either<ErrorWrapper,GetRoomCommentsOutput> output = getRoomComment.process(input);
@@ -64,10 +64,9 @@ private final UpdateComment updateComment;
                                          @RequestBody PostCommentInput postCommentInput){
 
         PostCommentInput input = PostCommentInput.builder()
-            .id(roomId)
+            .roomId(roomId)
             .content(postCommentInput.getContent())
-            .firstName(postCommentInput.getFirstName())
-            .lastName(postCommentInput.getLastName())
+            .userId(postCommentInput.getUserId())
             .build();
 
         Either<ErrorWrapper,PostCommentOutput> output = postComment.process(input);
@@ -82,7 +81,7 @@ private final UpdateComment updateComment;
     public ResponseEntity<?> updateCommentByUser(@PathVariable("commentId") String commentId,
                                                  @RequestBody UpdateCommentInput updateCommentInput){
         UpdateCommentInput input = UpdateCommentInput.builder()
-            .id(commentId)
+            .commentId(commentId)
             .content(updateCommentInput.getContent())
             .build();
 

@@ -27,55 +27,49 @@ import static io.vavr.Predicates.instanceOf;
 
 @Slf4j
 @Service
-public class EditCommentOperationProcessor extends BaseOperationProcessor implements EditComment{
+public class EditCommentOperationProcessor extends BaseOperationProcessor implements EditComment {
     private final CommentRepository commentRepository;
 
-    public EditCommentOperationProcessor(ConversionService conversionService, Validator validator,
-                                         ErrorMapper errorMapper, CommentRepository commentRepository) {
-        super(validator, conversionService,errorMapper);
+    public EditCommentOperationProcessor(ConversionService conversionService, Validator validator, ErrorMapper errorMapper,
+                                         CommentRepository commentRepository) {
+        super(validator, conversionService, errorMapper);
         this.commentRepository = commentRepository;
     }
 
     @Override
-    public Either<ErrorWrapper,EditCommentOutput> process(EditCommentInput input) {
+    public Either<ErrorWrapper, EditCommentOutput> process(EditCommentInput input) {
         log.info("Start EditRoomComment input {}", input);
-        return validateInput(input).flatMap(validated->editComment(input));
+        return validateInput(input).flatMap(validated -> editComment(input));
     }
 
-    private Either<ErrorWrapper,EditCommentOutput> editComment(EditCommentInput input) {
-        return Try.of(()->{
-        Comment commentToEdit = getComment(input);
-        Comment editedComment = getConvertedCommentToInput(input, commentToEdit);
-        commentRepository.save(editedComment);
+    private Either<ErrorWrapper, EditCommentOutput> editComment(EditCommentInput input) {
+        return Try.of(() -> {
+                Comment commentToEdit = getComment(input);
+                Comment editedComment = getConvertedCommentToInput(input, commentToEdit);
+                Comment savedComment =  commentRepository.save(editedComment);
+                EditCommentOutput result = EditCommentOutput.builder()
+                    .id(String.valueOf(savedComment.getId())).build();
+                log.info("End editRoomComment output {}", result);
+                return result;
 
-        EditCommentOutput result = EditCommentOutput
-            .builder()
-            .id(input.getId())
-            .build();
-
-        log.info("End editRoomComment output {}", result);
-        return result;
-        }).toEither().mapLeft(throwable -> Match(throwable).of(
-            Case($(instanceOf(NotFoundException.class)), errorMapper.handleError(throwable, HttpStatus.NOT_FOUND)),
-            Case($(), errorMapper.handleError(throwable, HttpStatus.BAD_REQUEST))
-        ));
+            })
+            .toEither()
+            .mapLeft(throwable -> Match(throwable).of(
+                Case($(instanceOf(NotFoundException.class)), errorMapper.handleError(throwable, HttpStatus.NOT_FOUND)),
+                Case($(), errorMapper.handleError(throwable, HttpStatus.BAD_REQUEST))));
     }
 
     private Comment getConvertedCommentToInput(EditCommentInput input, Comment commentToEdit) {
         Comment editedComment = conversionService.convert(input, Comment.CommentBuilder.class)
-            .commentRoomId(commentToEdit.getCommentRoomId())
-            .lastEditedBy(commentToEdit.getLastEditedBy())
-            .lastEditedDate(commentToEdit.getLastEditedDate())
-            .publishDate(commentToEdit.getPublishDate())
+            .lastEditedBy(input.getUserId())
             .build();
         editedComment.setId(commentToEdit.getId());
+
         return editedComment;
     }
 
     private Comment getComment(EditCommentInput input) {
-        //I do not use the RoomNo in the query because id is unique and sufficient
-        // admin shouldn't be able to alter the roomNo from here either so is useless
-        return commentRepository.findById(UUID.fromString(input.getId()))
-            .orElseThrow(()-> new NotFoundException(ErrorMessages.COMMENT_NOT_FOUND));
+        return commentRepository.findById(UUID.fromString(input.getCommentId()))
+            .orElseThrow(() -> new NotFoundException(ErrorMessages.COMMENT_NOT_FOUND));
     }
 }

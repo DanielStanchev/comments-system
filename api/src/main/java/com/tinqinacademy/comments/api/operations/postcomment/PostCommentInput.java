@@ -2,6 +2,7 @@ package com.tinqinacademy.comments.api.operations.postcomment;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.tinqinacademy.comments.api.base.OperationInput;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -20,17 +21,13 @@ import lombok.ToString;
 public class PostCommentInput implements OperationInput {
 
     @JsonIgnore
-    private String id;
+    @NotBlank(message = "Room ID cannot be blank.")
+    private String roomId;
 
-    @NotNull
-    @Size(min = 2, max = 15, message = "First name should be between 2 and 15 letters.")
-    private String firstName;
+    @NotBlank(message = "User ID cannot be blank.")
+    private String userId;
 
-    @NotNull
-    @Size(min = 2,max = 15,message = "First name should be between 2 and 15 letters.")
-    private String lastName;
-
-    @NotNull
+    @NotNull(message = "Content cannot be null.")
     @Size(min = 2,max = 150,message = "Comment content should be between 2 and 150 symbols.")
     private String content;
 }

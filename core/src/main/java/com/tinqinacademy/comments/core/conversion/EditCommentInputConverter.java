@@ -11,8 +11,8 @@ public class EditCommentInputConverter implements Converter<EditCommentInput, Co
     @Override
     public Comment.CommentBuilder convert(EditCommentInput input) {
         return Comment.builder()
-            .firstName(input.getFirstName())
-            .lastName(input.getLastName())
+            .roomId(input.getRoomId())
+            .userId(input.getUserId())
             .content(input.getContent());
     }
 }
