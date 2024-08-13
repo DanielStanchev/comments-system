@@ -10,8 +10,7 @@ public class AddCommentInputConversion implements Converter<PostCommentInput, Co
     @Override
     public Comment.CommentBuilder convert(PostCommentInput input) {
         return Comment.builder()
-            .firstName(input.getFirstName())
-            .lastName(input.getLastName())
+            .userId(input.getUserId())
             .content(input.getContent());
     }
 }

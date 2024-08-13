@@ -39,12 +39,11 @@ private final DeleteComment deleteComment;
         @ApiResponse(responseCode = "400", description = "Bad request")})
     @PutMapping(RestApiRoutes.SYSTEM_EDIT_COMMENT)
     public ResponseEntity<?> editCommentByAdmin(@PathVariable("commentId") String commentId,
-                                                                @RequestBody EditCommentInput editCommentInput){
+                                                @RequestBody EditCommentInput editCommentInput){
         EditCommentInput input = EditCommentInput.builder()
-            .id(commentId)
-            .firstName(editCommentInput.getFirstName())
-            .lastName(editCommentInput.getLastName())
-            .roomNo(editCommentInput.getRoomNo())
+            .commentId(commentId)
+            .userId(editCommentInput.getUserId())
+            .roomId(editCommentInput.getRoomId())
             .content(editCommentInput.getContent())
             .build();
 
@@ -61,7 +60,7 @@ private final DeleteComment deleteComment;
                                            @RequestBody DeleteCommentInput deleteCommentInput){
         DeleteCommentInput input = DeleteCommentInput
             .builder()
-            .id(commentId)
+            .commentId(commentId)
             .build();
 
         Either<ErrorWrapper,DeleteCommentOutput> output = deleteComment.process(input);

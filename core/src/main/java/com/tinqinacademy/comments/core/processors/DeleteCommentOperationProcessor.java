@@ -5,13 +5,16 @@ import com.tinqinacademy.comments.api.exceptionmodel.ErrorWrapper;
 import com.tinqinacademy.comments.api.operations.deletecomment.DeleteCommentInput;
 import com.tinqinacademy.comments.api.operations.deletecomment.DeleteCommentOutput;
 import com.tinqinacademy.comments.api.operations.deletecomment.DeleteComment;
+import com.tinqinacademy.comments.core.base.BaseOperationProcessor;
 import com.tinqinacademy.comments.core.exception.ErrorMapper;
 import com.tinqinacademy.comments.core.exception.exceptions.NotFoundException;
 import com.tinqinacademy.comments.persistence.entity.Comment;
 import com.tinqinacademy.comments.persistence.repository.CommentRepository;
 import io.vavr.control.Either;
 import io.vavr.control.Try;
+import jakarta.validation.Validator;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.convert.ConversionService;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -24,25 +27,25 @@ import static io.vavr.Predicates.instanceOf;
 
 @Slf4j
 @Service
-public class DeleteCommentOperationProcessor implements DeleteComment {
+public class DeleteCommentOperationProcessor extends BaseOperationProcessor implements DeleteComment {
 
     private final CommentRepository commentRepository;
-    private final ErrorMapper errorMapper;
 
-    public DeleteCommentOperationProcessor(CommentRepository commentRepository, ErrorMapper errorMapper) {
+
+    public DeleteCommentOperationProcessor(Validator validator, ConversionService conversionService,
+                                           ErrorMapper errorMapper, CommentRepository commentRepository) {
+        super(validator, conversionService,errorMapper);
         this.commentRepository = commentRepository;
-        this.errorMapper = errorMapper;
     }
 
     @Override
     public Either<ErrorWrapper,DeleteCommentOutput> process(DeleteCommentInput input) {
         log.info("Start deleteRoomComment input {}", input);
-        return deleteRoom(input);
+        return validateInput(input).flatMap(validated->deleteComment(input));
     }
 
-    private Either<ErrorWrapper,DeleteCommentOutput> deleteRoom(DeleteCommentInput input) {
+    private Either<ErrorWrapper,DeleteCommentOutput> deleteComment(DeleteCommentInput input) {
         return Try.of(()->{
-
         Comment commentToDelete = getComment(input);
         commentRepository.delete(commentToDelete);
         DeleteCommentOutput result = DeleteCommentOutput.builder().build();
@@ -56,7 +59,7 @@ public class DeleteCommentOperationProcessor implements DeleteComment {
     }
 
     private Comment getComment(DeleteCommentInput input) {
-        return commentRepository.findById(UUID.fromString(input.getId()))
+        return commentRepository.findById(UUID.fromString(input.getCommentId()))
             .orElseThrow(()-> new NotFoundException(ErrorMessages.COMMENT_NOT_FOUND));
     }
 }

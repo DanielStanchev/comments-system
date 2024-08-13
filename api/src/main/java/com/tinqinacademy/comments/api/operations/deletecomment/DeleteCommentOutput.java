@@ -1,7 +1,6 @@
 package com.tinqinacademy.comments.api.operations.deletecomment;
 
 import com.tinqinacademy.comments.api.base.OperationOutput;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

@@ -30,30 +30,33 @@ import static io.vavr.Predicates.instanceOf;
 public class UpdateCommentOperationProcessor extends BaseOperationProcessor implements UpdateComment {
     private final CommentRepository commentRepository;
 
-    public UpdateCommentOperationProcessor(Validator validator, ConversionService conversionService, ErrorMapper errorMapper, CommentRepository commentRepository) {
-        super(validator, conversionService,errorMapper);
+    public UpdateCommentOperationProcessor(Validator validator, ConversionService conversionService, ErrorMapper errorMapper,
+                                           CommentRepository commentRepository) {
+        super(validator, conversionService, errorMapper);
         this.commentRepository = commentRepository;
     }
 
     @Override
-    public Either<ErrorWrapper,UpdateCommentOutput> process(UpdateCommentInput input) {
+    public Either<ErrorWrapper, UpdateCommentOutput> process(UpdateCommentInput input) {
         log.info("Start updateRoomComment input {}", input);
-        return validateInput(input).flatMap(validated->updateComment(input));
+        return validateInput(input).flatMap(validated -> updateComment(input));
     }
 
-    private Either<ErrorWrapper,UpdateCommentOutput> updateComment(UpdateCommentInput input) {
-        return Try.of(()->{
+    private Either<ErrorWrapper, UpdateCommentOutput> updateComment(UpdateCommentInput input) {
+        return Try.of(() -> {
 
-        Comment commentToUpdate = getComment(input);
-        Comment updatedComment = getConvertedCommentByInput(input, commentToUpdate);
-        commentRepository.save(updatedComment);
+                Comment commentToUpdate = getComment(input);
+                Comment updatedComment = getConvertedCommentByInput(input, commentToUpdate);
+                Comment savedComment = commentRepository.save(updatedComment);
 
-        UpdateCommentOutput result = UpdateCommentOutput.builder()
-            .id(input.getId())
-            .build();
-        log.info("End updateRoomComment output {}", result);
-        return result;
-        }).toEither()
+                UpdateCommentOutput result = UpdateCommentOutput.builder()
+                    .id(String.valueOf(savedComment.getId()))
+                    .build();
+                log.info("End updateRoomComment output {}", result);
+                return result;
+
+            })
+            .toEither()
             .mapLeft(throwable -> Match(throwable).of(
                 Case($(instanceOf(NotFoundException.class)), errorMapper.handleError(throwable, HttpStatus.NOT_FOUND)),
                 Case($(), errorMapper.handleError(throwable, HttpStatus.BAD_REQUEST))));
@@ -61,19 +64,14 @@ public class UpdateCommentOperationProcessor extends BaseOperationProcessor impl
 
     private Comment getConvertedCommentByInput(UpdateCommentInput input, Comment commentToUpdate) {
         Comment updatedComment = conversionService.convert(input, Comment.CommentBuilder.class)
-            .commentRoomId(commentToUpdate.getCommentRoomId())
-            .lastName(commentToUpdate.getLastName())
-            .firstName(commentToUpdate.getFirstName())
-            .lastEditedBy(commentToUpdate.getLastEditedBy())
-            .lastEditedDate(commentToUpdate.getLastEditedDate())
-            .publishDate(commentToUpdate.getPublishDate())
+            .lastEditedBy(input.getUserId())
             .build();
         updatedComment.setId(commentToUpdate.getId());
         return updatedComment;
     }
 
     private Comment getComment(UpdateCommentInput input) {
-        return commentRepository.findById(UUID.fromString(input.getId()))
-            .orElseThrow(()-> new NotFoundException(ErrorMessages.COMMENT_NOT_FOUND));
+        return commentRepository.findById(UUID.fromString(input.getCommentId()))
+            .orElseThrow(() -> new NotFoundException(ErrorMessages.COMMENT_NOT_FOUND));
     }
 }

@@ -19,7 +19,7 @@ import lombok.ToString;
 public class DeleteCommentInput implements OperationInput {
 
     @JsonIgnore
-    @NotBlank(message = "Enter a valid ID.")
-    private String id;
+    @NotBlank(message = "Comment ID cannot be blank.")
+    private String commentId;
 
 }
