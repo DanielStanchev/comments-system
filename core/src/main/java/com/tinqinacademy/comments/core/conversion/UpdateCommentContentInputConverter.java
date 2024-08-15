@@ -11,6 +11,7 @@ public class UpdateCommentContentInputConverter extends BaseConverter<UpdateComm
     @Override
     public Comment.CommentBuilder convertObject(UpdateCommentInput input) {
         return Comment.builder()
+            .lastEditedBy(input.getUserId())
             .userId(input.getUserId())
             .content(input.getContent());
     }

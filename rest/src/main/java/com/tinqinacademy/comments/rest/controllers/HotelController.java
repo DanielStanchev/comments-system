@@ -82,6 +82,7 @@ private final UpdateComment updateComment;
                                                  @RequestBody UpdateCommentInput updateCommentInput){
         UpdateCommentInput input = UpdateCommentInput.builder()
             .commentId(commentId)
+            .userId(updateCommentInput.getUserId())
             .content(updateCommentInput.getContent())
             .build();
 

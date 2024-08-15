@@ -33,7 +33,7 @@ private final DeleteComment deleteComment;
         this.deleteComment = deleteComment;
     }
 
-    @Operation(summary = "Edit a comment.")
+    @Operation(summary = "Admin edit a comment.")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "OK"),
         @ApiResponse(responseCode = "400", description = "Bad request")})
