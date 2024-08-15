@@ -13,7 +13,6 @@ public class EditCommentInputConverter extends BaseConverter<EditCommentInput, C
         return Comment.builder()
             .roomId(input.getRoomId())
             .userId(input.getUserId())
-            .lastEditedBy(input.getUserId())
             .content(input.getContent());
     }
 }

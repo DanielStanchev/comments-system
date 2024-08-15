@@ -44,11 +44,9 @@ public class UpdateCommentOperationProcessor extends BaseOperationProcessor impl
 
     private Either<ErrorWrapper, UpdateCommentOutput> updateComment(UpdateCommentInput input) {
         return Try.of(() -> {
-
                 Comment commentToUpdate = getComment(input);
                 Comment updatedComment = getConvertedCommentByInput(input, commentToUpdate);
                 Comment savedComment = commentRepository.save(updatedComment);
-
                 UpdateCommentOutput result = UpdateCommentOutput.builder()
                     .id(String.valueOf(savedComment.getId()))
                     .build();
@@ -64,7 +62,8 @@ public class UpdateCommentOperationProcessor extends BaseOperationProcessor impl
 
     private Comment getConvertedCommentByInput(UpdateCommentInput input, Comment commentToUpdate) {
         Comment updatedComment = conversionService.convert(input, Comment.CommentBuilder.class)
-            .lastEditedBy(input.getUserId())
+            .publishDate(commentToUpdate.getPublishDate())
+            .roomId(commentToUpdate.getRoomId())
             .build();
         updatedComment.setId(commentToUpdate.getId());
         return updatedComment;
