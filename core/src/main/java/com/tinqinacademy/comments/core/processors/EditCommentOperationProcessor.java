@@ -61,10 +61,9 @@ public class EditCommentOperationProcessor extends BaseOperationProcessor implem
 
     private Comment getConvertedCommentToInput(EditCommentInput input, Comment commentToEdit) {
         Comment editedComment = conversionService.convert(input, Comment.CommentBuilder.class)
-            .lastEditedBy(input.getUserId())
+            .publishDate(commentToEdit.getPublishDate())
             .build();
         editedComment.setId(commentToEdit.getId());
-
         return editedComment;
     }
 
