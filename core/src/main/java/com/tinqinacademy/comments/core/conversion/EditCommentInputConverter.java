@@ -12,7 +12,7 @@ public class EditCommentInputConverter extends BaseConverter<EditCommentInput, C
     public Comment.CommentBuilder convertObject(EditCommentInput input) {
         return Comment.builder()
             .roomId(input.getRoomId())
-            .userId(input.getUserId())
+            //.userId(input.getUserId())
             .content(input.getContent());
     }
 }

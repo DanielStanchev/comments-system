@@ -18,6 +18,7 @@ import org.springframework.core.convert.ConversionService;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.util.Objects;
 import java.util.UUID;
 
 import static io.vavr.API.$;
@@ -45,6 +46,7 @@ public class UpdateCommentOperationProcessor extends BaseOperationProcessor impl
     private Either<ErrorWrapper, UpdateCommentOutput> updateComment(UpdateCommentInput input) {
         return Try.of(() -> {
                 Comment commentToUpdate = getComment(input);
+                checkIfOwnComment(input, commentToUpdate);
                 Comment updatedComment = getConvertedCommentByInput(input, commentToUpdate);
                 Comment savedComment = commentRepository.save(updatedComment);
                 UpdateCommentOutput result = UpdateCommentOutput.builder()
@@ -58,6 +60,12 @@ public class UpdateCommentOperationProcessor extends BaseOperationProcessor impl
             .mapLeft(throwable -> Match(throwable).of(
                 Case($(instanceOf(NotFoundException.class)), errorMapper.handleError(throwable, HttpStatus.NOT_FOUND)),
                 Case($(), errorMapper.handleError(throwable, HttpStatus.BAD_REQUEST))));
+    }
+
+    private static void checkIfOwnComment(UpdateCommentInput input, Comment commentToUpdate) throws IllegalAccessException {
+        if(!Objects.equals(input.getUserId(), commentToUpdate.getUserId())){
+            throw new IllegalAccessException("Can update only own comments!");
+        }
     }
 
     private Comment getConvertedCommentByInput(UpdateCommentInput input, Comment commentToUpdate) {
