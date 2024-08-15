@@ -1,4 +1,4 @@
-package com.tinqinacademy.comments.api.operations.postcomment;
+package com.tinqinacademy.comments.api.operations.addcomment;
 
 import com.tinqinacademy.comments.api.base.OperationOutput;
 import lombok.AllArgsConstructor;
@@ -14,6 +14,6 @@ import lombok.ToString;
 @AllArgsConstructor
 @ToString
 @Builder
-public class PostCommentOutput implements OperationOutput {
+public class AddCommentOutput implements OperationOutput {
     private String id;
 }

@@ -1,9 +1,9 @@
 package com.tinqinacademy.comments.core.processors;
 
 import com.tinqinacademy.comments.api.exceptionmodel.ErrorWrapper;
-import com.tinqinacademy.comments.api.operations.postcomment.PostComment;
-import com.tinqinacademy.comments.api.operations.postcomment.PostCommentInput;
-import com.tinqinacademy.comments.api.operations.postcomment.PostCommentOutput;
+import com.tinqinacademy.comments.api.operations.addcomment.AddComment;
+import com.tinqinacademy.comments.api.operations.addcomment.AddCommentInput;
+import com.tinqinacademy.comments.api.operations.addcomment.AddCommentOutput;
 import com.tinqinacademy.comments.core.base.BaseOperationProcessor;
 import com.tinqinacademy.comments.core.exception.ErrorMapper;
 import com.tinqinacademy.comments.core.exception.exceptions.NotFoundException;
@@ -24,34 +24,28 @@ import static io.vavr.Predicates.instanceOf;
 
 @Slf4j
 @Service
-public class PostCommentOperationProcessor extends BaseOperationProcessor implements PostComment {
+public class AddCommentOperationProcessor extends BaseOperationProcessor implements AddComment {
     private final CommentRepository commentRepository;
 
-    public PostCommentOperationProcessor(Validator validator, ConversionService conversionService, ErrorMapper errorMapper,
-                                         CommentRepository commentRepository) {
+    public AddCommentOperationProcessor(Validator validator, ConversionService conversionService, ErrorMapper errorMapper,
+                                        CommentRepository commentRepository) {
         super(validator, conversionService, errorMapper);
         this.commentRepository = commentRepository;
     }
 
     @Override
-    public Either<ErrorWrapper, PostCommentOutput> process(PostCommentInput input) {
+    public Either<ErrorWrapper, AddCommentOutput> process(AddCommentInput input) {
         log.info("Start addRoomComment input {}", input);
         return validateInput(input).flatMap(validated -> postComment(input));
     }
 
-    private Either<ErrorWrapper, PostCommentOutput> postComment(PostCommentInput input) {
+    private Either<ErrorWrapper, AddCommentOutput> postComment(AddCommentInput input) {
         return Try.of(() -> {
-
-                Comment commentToAdd = conversionService.convert(input, Comment.CommentBuilder.class)
-                    .lastEditedBy(input.getUserId())
-                    .build();
-
+                Comment commentToAdd = conversionService.convert(input, Comment.CommentBuilder.class).build();
                 Comment savedComment = commentRepository.save(commentToAdd);
-
-                PostCommentOutput result = PostCommentOutput.builder()
+                AddCommentOutput result = AddCommentOutput.builder()
                     .id(String.valueOf(savedComment.getId()))
                     .build();
-
                 log.info("End addRoomComment output {}", result);
                 return result;
 
