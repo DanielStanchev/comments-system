@@ -27,8 +27,9 @@ public class EditCommentInput implements OperationInput {
     @NotBlank(message = "Room ID cannot be blank.")
     private String roomId;
 
-    @NotNull(message = "User ID cannot be blank.")
-    private String userId;
+    //removed as when Admin edit comment User id will remain as per initial comment publisher
+//    @NotNull(message = "User ID cannot be blank.")
+//    private String userId;
 
     @NotNull(message = "Content cannot be null.")
     @Size(min = 2,max = 150,message = "Comment content should be between 2 and 150 symbols.")

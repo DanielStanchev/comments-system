@@ -42,7 +42,7 @@ private final DeleteComment deleteComment;
                                                 @RequestBody EditCommentInput editCommentInput){
         EditCommentInput input = EditCommentInput.builder()
             .commentId(commentId)
-            .userId(editCommentInput.getUserId())
+            //.userId(editCommentInput.getUserId())
             .roomId(editCommentInput.getRoomId())
             .content(editCommentInput.getContent())
             .build();
