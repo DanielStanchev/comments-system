@@ -13,6 +13,6 @@ import java.util.UUID;
 @Repository
 public interface CommentRepository extends JpaRepository<Comment, UUID> {
 
-    @Query("SELECT c FROM Comment c WHERE c.commentRoomId =:roomId")
+    @Query("SELECT c FROM Comment c WHERE c.roomId =:roomId")
     List<Comment> findCommentsByRoomId(@Param("roomId")String roomId);
 }

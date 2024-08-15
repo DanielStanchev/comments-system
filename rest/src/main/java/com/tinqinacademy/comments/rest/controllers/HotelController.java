@@ -4,9 +4,9 @@ import com.tinqinacademy.comments.api.exceptionmodel.ErrorWrapper;
 import com.tinqinacademy.comments.api.operations.getroomcomments.GetRoomComment;
 import com.tinqinacademy.comments.api.operations.getroomcomments.GetRoomCommentsInput;
 import com.tinqinacademy.comments.api.operations.getroomcomments.GetRoomCommentsOutput;
-import com.tinqinacademy.comments.api.operations.postcomment.PostComment;
-import com.tinqinacademy.comments.api.operations.postcomment.PostCommentInput;
-import com.tinqinacademy.comments.api.operations.postcomment.PostCommentOutput;
+import com.tinqinacademy.comments.api.operations.addcomment.AddComment;
+import com.tinqinacademy.comments.api.operations.addcomment.AddCommentInput;
+import com.tinqinacademy.comments.api.operations.addcomment.AddCommentOutput;
 import com.tinqinacademy.comments.api.operations.updateusercomment.UpdateComment;
 import com.tinqinacademy.comments.api.operations.updateusercomment.UpdateCommentInput;
 import com.tinqinacademy.comments.api.operations.updateusercomment.UpdateCommentOutput;
@@ -31,12 +31,12 @@ public class HotelController extends BaseController{
 
 
 private final GetRoomComment getRoomComment;
-private final PostComment postComment;
+private final AddComment addComment;
 private final UpdateComment updateComment;
 
-    public HotelController(GetRoomComment getRoomComment, PostComment postComment, UpdateComment updateComment) {
+    public HotelController(GetRoomComment getRoomComment, AddComment addComment, UpdateComment updateComment) {
         this.getRoomComment = getRoomComment;
-        this.postComment = postComment;
+        this.addComment = addComment;
         this.updateComment = updateComment;
     }
 
@@ -60,16 +60,16 @@ private final UpdateComment updateComment;
         @ApiResponse(responseCode = "201", description = "CREATED"),
         @ApiResponse(responseCode = "400", description = "Bad request")})
     @PostMapping(RestApiRoutes.HOTEL_POST_COMMENT)
-    public ResponseEntity<?> postComment(@PathVariable("roomId") String roomId,
-                                         @RequestBody PostCommentInput postCommentInput){
+    public ResponseEntity<?> addComment(@PathVariable("roomId") String roomId,
+                                         @RequestBody AddCommentInput addCommentInput){
 
-        PostCommentInput input = PostCommentInput.builder()
+        AddCommentInput input = AddCommentInput.builder()
             .roomId(roomId)
-            .content(postCommentInput.getContent())
-            .userId(postCommentInput.getUserId())
+            .content(addCommentInput.getContent())
+            .userId(addCommentInput.getUserId())
             .build();
 
-        Either<ErrorWrapper,PostCommentOutput> output = postComment.process(input);
+        Either<ErrorWrapper, AddCommentOutput> output = addComment.process(input);
         return handleResult(output,HttpStatus.CREATED);
     }
 

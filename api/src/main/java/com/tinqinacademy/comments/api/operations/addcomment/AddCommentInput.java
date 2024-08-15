@@ -1,4 +1,4 @@
-package com.tinqinacademy.comments.api.operations.postcomment;
+package com.tinqinacademy.comments.api.operations.addcomment;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.tinqinacademy.comments.api.base.OperationInput;
@@ -18,7 +18,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @ToString
 @Builder
-public class PostCommentInput implements OperationInput {
+public class AddCommentInput implements OperationInput {
 
     @JsonIgnore
     @NotBlank(message = "Room ID cannot be blank.")
