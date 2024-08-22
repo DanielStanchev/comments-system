@@ -35,8 +35,9 @@ private final DeleteComment deleteComment;
 
     @Operation(summary = "Admin edit a comment.")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "OK"),
-        @ApiResponse(responseCode = "400", description = "Bad request")})
+        @ApiResponse(responseCode = "200", description = "Ok"),
+        @ApiResponse(responseCode = "400", description = "Bad request"),
+        @ApiResponse(responseCode = "404", description = "Not found")})
     @PutMapping(RestApiRoutes.SYSTEM_EDIT_COMMENT)
     public ResponseEntity<?> editCommentByAdmin(@PathVariable("commentId") String commentId,
                                                 @RequestBody EditCommentInput editCommentInput){
@@ -53,8 +54,9 @@ private final DeleteComment deleteComment;
 
     @Operation(summary = "Delete a comment")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "OK"),
-        @ApiResponse(responseCode = "400", description = "Bad request")})
+        @ApiResponse(responseCode = "200", description = "Ok"),
+        @ApiResponse(responseCode = "400", description = "Bad request"),
+        @ApiResponse(responseCode = "404", description = "Not found")})
     @DeleteMapping(RestApiRoutes.SYSTEM_DELETE_COMMENT)
     public ResponseEntity<?> deleteComment(@PathVariable("commentId") String commentId,
                                            @RequestBody DeleteCommentInput deleteCommentInput){
