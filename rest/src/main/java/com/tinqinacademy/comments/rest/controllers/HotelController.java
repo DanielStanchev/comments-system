@@ -42,7 +42,8 @@ private final UpdateComment updateComment;
 
     @Operation(summary = "Get comments", description = "Get all comments")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "OK"),
+        @ApiResponse(responseCode = "200", description = "Ok"),
+        @ApiResponse(responseCode = "400", description = "Bad request"),
         @ApiResponse(responseCode = "404", description = "Not found")})
     @GetMapping(RestApiRoutes.HOTEL_GET_COMMENTS)
     public ResponseEntity<?> getComments(@PathVariable("roomId") String roomId){
@@ -58,7 +59,8 @@ private final UpdateComment updateComment;
     @Operation(summary = "Post a comment.")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "201", description = "CREATED"),
-        @ApiResponse(responseCode = "400", description = "Bad request")})
+        @ApiResponse(responseCode = "400", description = "Bad request"),
+        @ApiResponse(responseCode = "404", description = "Not found")})
     @PostMapping(RestApiRoutes.HOTEL_POST_COMMENT)
     public ResponseEntity<?> addComment(@PathVariable("roomId") String roomId,
                                          @RequestBody AddCommentInput addCommentInput){
@@ -75,8 +77,9 @@ private final UpdateComment updateComment;
 
     @Operation(summary = "User update a comment.")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "OK"),
-        @ApiResponse(responseCode = "400", description = "Bad request")})
+        @ApiResponse(responseCode = "200", description = "Ok"),
+        @ApiResponse(responseCode = "400", description = "Bad request"),
+        @ApiResponse(responseCode = "404", description = "Not found")})
     @PatchMapping(RestApiRoutes.HOTEL_UPDATE_COMMENT)
     public ResponseEntity<?> updateCommentByUser(@PathVariable("commentId") String commentId,
                                                  @RequestBody UpdateCommentInput updateCommentInput){
